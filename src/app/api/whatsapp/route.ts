@@ -54,6 +54,8 @@ export async function POST(req: NextRequest) {
   <Message>${escapeXml(reply)}</Message>
 </Response>`;
 
+    console.log("WhatsApp webhook returning TwiML:", twiml);
+
     return new NextResponse(twiml, {
       headers: { "Content-Type": "text/xml" },
     });

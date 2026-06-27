@@ -27,7 +27,7 @@ type Conversation = {
 const MESSAGES = {
   English: {
     welcome:
-      "Welcome to NibBot, your smart business assistant.\n\nPlease select your language:\n1. English\n2. Hausa",
+      "Welcome to nibBot 👋\n\nYour smart business assistant.\n\nPlease select your language:\n1. English\n2. Hausa",
     askName:
       "What is the name of your business? (For example: Mama Ngozi Store)",
     askBusinessType:
@@ -46,7 +46,7 @@ const MESSAGES = {
   },
   Hausa: {
     welcome:
-      "Barka da zuwa NibBot, abokin kasuwancin ku na waya.\n\nDa fatan za a zaɓi harshe:\n1. Turanci\n2. Hausa",
+      "Barka da zuwa nibBot 👋\n\nAbokin kasuwancinku na waya.\n\nDa fatan za a zaɓi harshe:\n1. Turanci\n2. Hausa",
     askName:
       "Menene sunan kasuwancinku? (Misali: Shago Mama Ngozi)",
     askBusinessType:

@@ -14,7 +14,7 @@ type Message = {
 const demoMessages: Message[] = [
   {
     id: 1,
-    text: "Welcome to NibBot, your smart business assistant.\n\nPlease select your language:\n1. English\n2. Hausa",
+    text: "Welcome to nibBot 👋\n\nYour smart business assistant.\n\nPlease select your language:\n1. English\n2. Hausa",
     sender: "bot",
   },
   { id: 2, text: "1", sender: "user" },
