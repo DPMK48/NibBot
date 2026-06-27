@@ -56,8 +56,8 @@ export async function POST(req: NextRequest) {
 
     console.log("WhatsApp webhook returning TwiML:", twiml);
 
-    return new NextResponse(twiml, {
-      headers: { "Content-Type": "text/xml" },
+    return new Response(twiml, {
+      headers: { "Content-Type": "text/xml; charset=utf-8" },
     });
   } catch (error) {
     console.error("WhatsApp webhook error:", error);
@@ -65,8 +65,8 @@ export async function POST(req: NextRequest) {
 <Response>
   <Message>Sorry, something went wrong. Please try again.</Message>
 </Response>`;
-    return new NextResponse(twiml, {
-      headers: { "Content-Type": "text/xml" },
+    return new Response(twiml, {
+      headers: { "Content-Type": "text/xml; charset=utf-8" },
       status: 200,
     });
   }
