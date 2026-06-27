@@ -1,7 +1,10 @@
 import OpenAI from "openai";
 
 const apiKey = process.env.OPENAI_API_KEY;
-export const openai = apiKey ? new OpenAI({ apiKey }) : null;
+export const openai =
+  apiKey && apiKey !== "your_openai_api_key" && !apiKey.startsWith("your_")
+    ? new OpenAI({ apiKey })
+    : null;
 
 export type ExtractedTransaction = {
   type: "SALE" | "PURCHASE" | null;
