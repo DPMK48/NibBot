@@ -7,17 +7,18 @@ A bilingual WhatsApp-based AI bookkeeping assistant for small business women in 
 - 📱 **WhatsApp-first** — no app download needed
 - 🎙️ **Voice notes + text** — speak or type naturally
 - 🌍 **English + Hausa** — full bilingual support
-- 🤖 **AI-powered extraction** — OpenAI GPT-4o extracts products, quantities, and prices
+- 🤖 **AI-powered extraction** — OpenAI GPT-4o-mini extracts products, quantities, prices, and totals
+- 🔄 **Smart Clarification** — automatically asks clarifying questions in the selected language if details are missing or vague
 - 📊 **Daily profit summaries** — know your numbers instantly
-- 💡 **Business insights** — AI-generated practical advice
+- 💡 **Business insights** — AI-generated practical business advice tailored to the business type
 
 ## Tech Stack
 
 - Next.js 16 + React 19 + TypeScript
 - Tailwind CSS
-- Drizzle ORM + PostgreSQL
+- Drizzle ORM + PostgreSQL (Supabase)
 - Twilio WhatsApp API
-- OpenAI Whisper + GPT-4o
+- OpenAI Whisper + GPT-4o-mini
 
 ## Getting Started
 
@@ -32,17 +33,27 @@ npm install
 Copy `.env` and fill in your credentials:
 
 ```bash
-DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/app_db
+# --- Database ---
+DATABASE_URL=postgresql://...
+
+# --- Twilio (WhatsApp) ---
 TWILIO_ACCOUNT_SID=your_twilio_account_sid
 TWILIO_AUTH_TOKEN=your_twilio_auth_token
 TWILIO_PHONE_NUMBER=whatsapp:+14155238886
+
+# --- OpenAI ---
 OPENAI_API_KEY=your_openai_api_key
+
+# --- Public (exposed to the browser) ---
+NEXT_PUBLIC_WHATSAPP_NUMBER=14155238886
 ```
 
 ### 3. Push database schema
 
+Deploy the Drizzle schema to your PostgreSQL database:
+
 ```bash
-npx drizzle-kit push
+npm run db:push
 ```
 
 ### 4. Run the development server
@@ -51,7 +62,9 @@ npx drizzle-kit push
 npm run dev
 ```
 
-The app will be available at `http://localhost:3000`.
+The landing page will be available at `http://localhost:3000`.
+
+---
 
 ## WhatsApp Bot Setup
 
@@ -65,7 +78,7 @@ The app will be available at `http://localhost:3000`.
 4. **Configure the WhatsApp Sandbox**:
    - Go to **Messaging > Try it out > Send a WhatsApp message**
    - Copy the Sandbox number (usually `+1 415 523 8886`)
-   - Set `TWILIO_PHONE_NUMBER=whatsapp:+14155238886` in `.env`
+   - Set `TWILIO_PHONE_NUMBER=whatsapp:+14155238886` and `NEXT_PUBLIC_WHATSAPP_NUMBER=14155238886` in `.env`
 5. **Set the webhook URL**:
    - In the Sandbox settings, set "When a message comes in" to:
      ```
@@ -75,52 +88,64 @@ The app will be available at `http://localhost:3000`.
      ```bash
      ngrok http 3000
      ```
-     Then use the ngrok HTTPS URL + `/api/whatsapp`
+     Then configure the webhook URL with the ngrok HTTPS URL + `/api/whatsapp`. Note that signature check is bypassed in local `development` mode if the header is missing.
 6. **Join the Sandbox**:
-   - Send a WhatsApp message to the Sandbox number with the join code shown in your Twilio console
+   - Send a WhatsApp message to the Sandbox number with the join code shown in your Twilio console.
 7. **Start chatting**:
-   - Send any message to begin
-   - Select language: `1` for English or `2` for Hausa
+   - Send any message (e.g. "hello") to begin the onboarding flow.
 
-### Using Meta WhatsApp Business API (production)
+---
 
-For production, register a WhatsApp Business account through Meta and connect it to Twilio or use the Meta Business API directly.
+## How the Bot Works Under the Hood
 
-## API Endpoints
+1. **Webhook Payload Received**: The user sends a WhatsApp message or audio note. Twilio forwards it to `/api/whatsapp`.
+2. **Audio Transcription**: If it's an audio note, the bot downloads the media from Twilio and transcribes it using **OpenAI Whisper**.
+3. **AI Information Extraction**: The message text is sent to **OpenAI GPT-4o-mini** with system instructions to extract the transaction details (Product, Quantity, Unit, Price, Total, and Transaction Type).
+4. **Clarification**: If any fields are vague or missing, the bot generates a targeted clarifying question (in English or Hausa) and pauses for the user's input.
+5. **Confirmation**: Once details are complete, the bot presents the extracted details and asks for verification.
+6. **Data Storage**: Upon user confirmation, the transaction is saved to PostgreSQL using **Drizzle ORM**.
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/whatsapp` | POST | Twilio webhook for incoming WhatsApp messages |
-| `/api/waitlist` | POST | Join the waitlist |
-| `/api/stats` | GET | Get live platform stats |
-| `/api/health` | GET | Health check |
-
-## How the Bot Works
-
-1. User sends a message to the WhatsApp number
-2. Twilio forwards it to `/api/whatsapp`
-3. The bot extracts intent and transaction data using OpenAI
-4. For voice notes, audio is downloaded from Twilio and transcribed with Whisper
-5. Data is saved to PostgreSQL after user confirmation
-6. The bot replies with the next prompt, summary, or insight
+---
 
 ## Conversation Flow
 
 ```
-Welcome → Language Selection → Main Menu
-                                    ↓
-              ┌─────────────┬──────────┬──────────────┬──────────┐
-              ↓             ↓          ↓              ↓          ↓
-         Record Sale  Record Purchase  Today's Summary  Insights  ...
-              ↓             ↓
-         Voice/Text   Voice/Text
-              ↓             ↓
-         Confirmation → Save → Back to Menu
+   Welcome (Hi/Hello)
+          │
+          ▼
+  Language Selection (1. English / 2. Hausa)
+          │
+          ▼
+  Onboarding: Business Name (e.g., Mama Aisha Store)
+          │
+          ▼
+  Onboarding: Business Type (e.g., Provisions)
+          │
+          ▼
+  Main Menu
+   ├── [1] Record Sales ──────┐
+   ├── [2] Record Purchases ──┼──► Voice/Text Input
+   │                          │          │
+   │                          │          ▼
+   │                          │    AI Extraction (GPT-4o-mini)
+   │                          │          │
+   │                          │          ├─► [Vague/Missing] ──► Clarification Loop
+   │                          │          │                            │
+   │                          │          ▼                            ▼
+   │                          └────► Confirmation (1. Yes / 2. No) ◄──┘
+   │                                     │
+   │                                     ├─► [Yes] ──► Save to DB & Menu
+   │                                     └─► [No] ───► Discard & Menu
+   │
+   ├── [3] Today's Summary (Aggregates daily sales, purchases, and profit)
+   └── [4] View Insights (AI-generated advice based on recent transactions)
 ```
 
-## Deployment
+## Database Management Scripts
 
-Deploy to Vercel, Railway, Render, or any Node.js hosting platform. Make sure your environment variables are set in your hosting dashboard.
+- `npm run db:push` — Push the local schema directly to the database.
+- `npm run db:studio` — Open the Drizzle Studio GUI to inspect tables.
+- `npm run db:generate` — Generate SQL migrations.
 
 ## License
 

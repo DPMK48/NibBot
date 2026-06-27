@@ -41,41 +41,8 @@ const staticTestimonials: Testimonial[] = [
 export default function Testimonials() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
-  const [dynamicTestimonials, setDynamicTestimonials] = useState<Testimonial[]>([]);
 
-  useEffect(() => {
-    async function loadStories() {
-      try {
-        const res = await fetch("/api/stories");
-        if (res.ok) {
-          const json = await res.json();
-          if (json.success && Array.isArray(json.data)) {
-            const mapped: Testimonial[] = json.data.map((item: any) => {
-              // Capitalize business type for display
-              let businessDisplay = "Business Owner";
-              if (item.businessType) {
-                businessDisplay = item.businessType
-                  .replace(/_/g, " ")
-                  .replace(/\b\w/g, (c: string) => c.toUpperCase());
-              }
-              return {
-                name: item.name,
-                business: businessDisplay,
-                quote: item.story || "",
-                language: item.language || "English",
-              };
-            });
-            setDynamicTestimonials(mapped);
-          }
-        }
-      } catch (error) {
-        console.error("Failed to load user stories:", error);
-      }
-    }
-    loadStories();
-  }, []);
-
-  const allTestimonials = [...staticTestimonials, ...dynamicTestimonials];
+  const allTestimonials = staticTestimonials;
 
   return (
     <section className="py-24 bg-offwhite">

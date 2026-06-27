@@ -5,7 +5,6 @@ import Features from "./components/Features";
 import Demo from "./components/Demo";
 import Impact from "./components/Impact";
 import Testimonials from "./components/Testimonials";
-import Waitlist from "./components/Waitlist";
 import Footer from "./components/Footer";
 
 export default function Home() {
@@ -18,7 +17,6 @@ export default function Home() {
       <Demo />
       <Impact />
       <Testimonials />
-      <Waitlist />
       <Footer />
     </main>
   );

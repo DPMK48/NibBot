@@ -78,14 +78,6 @@ export default function Footer() {
                   Our Impact
                 </a>
               </li>
-              <li>
-                <a
-                  href="#waitlist"
-                  className="text-sm text-white/40 hover:text-gold transition-colors"
-                >
-                  Share Story
-                </a>
-              </li>
             </ul>
           </div>
 

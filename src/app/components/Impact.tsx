@@ -48,7 +48,7 @@ export default function Impact() {
   const isInView = useInView(ref, { once: true, margin: "-80px" });
 
   const [data, setData] = useState({
-    waitlistCount: 0,
+    userCount: 0,
     transactionCount: 0,
     totalSales: 0,
     totalPurchases: 0,
@@ -59,7 +59,7 @@ export default function Impact() {
       .then((res) => res.json())
       .then((json) => {
         setData({
-          waitlistCount: json.waitlistCount || 0,
+          userCount: json.userCount || 0,
           transactionCount: json.transactionCount || 0,
           totalSales: Number(json.totalSales || 0),
           totalPurchases: Number(json.totalPurchases || 0),
@@ -71,10 +71,10 @@ export default function Impact() {
   const stats = [
     {
       icon: Users,
-      target: data.waitlistCount,
+      target: data.userCount,
       prefix: "",
       suffix: "+",
-      label: "Stories Shared",
+      label: "Active Users",
     },
     {
       icon: Receipt,

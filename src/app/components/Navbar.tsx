@@ -21,6 +21,11 @@ export default function Navbar() {
     { label: "Impact", href: "#impact" },
   ];
 
+  const number = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
+  const whatsappHref = number
+    ? `https://wa.me/${number}?text=${encodeURIComponent("Hello NibBot")}`
+    : "#";
+
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -51,10 +56,12 @@ export default function Navbar() {
               </a>
             ))}
             <a
-              href="#waitlist"
+              href={whatsappHref}
+              target={number ? "_blank" : undefined}
+              rel={number ? "noopener noreferrer" : undefined}
               className="text-sm font-semibold bg-gold hover:bg-gold-dark text-white px-5 py-2.5 rounded-full transition-colors"
             >
-              Share Story
+              Start on WhatsApp
             </a>
           </div>
 
@@ -87,11 +94,13 @@ export default function Navbar() {
                 </a>
               ))}
               <a
-                href="#waitlist"
+                href={whatsappHref}
+                target={number ? "_blank" : undefined}
+                rel={number ? "noopener noreferrer" : undefined}
                 onClick={() => setMobileOpen(false)}
                 className="block text-center text-sm font-semibold bg-gold hover:bg-gold-dark text-white px-5 py-3 rounded-full transition-colors"
               >
-                Share Story
+                Start on WhatsApp
               </a>
             </div>
           </motion.div>

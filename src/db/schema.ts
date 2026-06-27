@@ -1,14 +1,5 @@
 import { pgTable, serial, varchar, text, integer, timestamp, decimal, jsonb } from "drizzle-orm/pg-core";
 
-export const waitlist = pgTable("waitlist", {
-  id: serial("id").primaryKey(),
-  name: varchar("name", { length: 255 }).notNull(),
-  phone: varchar("phone", { length: 50 }).notNull(),
-  businessType: varchar("business_type", { length: 100 }),
-  language: varchar("language", { length: 20 }).default("English"),
-  story: text("story"),
-  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
-});
 
 export const transactions = pgTable("transactions", {
   id: serial("id").primaryKey(),
