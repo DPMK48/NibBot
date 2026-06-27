@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { users, verifications, transactions } from "@/db/schema";
 import { eq, and, desc, or } from "drizzle-orm";
-import { normalizePhoneNumber } from "../request-code/route";
+import { normalizePhoneNumber } from "@/lib/utils";
 
 export async function POST(req: NextRequest) {
   try {

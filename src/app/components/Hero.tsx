@@ -141,9 +141,9 @@ export default function Hero() {
                       <p className="text-xs text-white/80">
                         Please select your language:
                         <br />
-                        1️⃣ English
+                        1. English
                         <br />
-                        2️⃣ Hausa
+                        2. Hausa
                       </p>
                       <p className="text-[10px] text-white/30 mt-1.5">10:02 AM</p>
                     </motion.div>
@@ -170,13 +170,13 @@ export default function Hero() {
                         Hello! 👋 What would you like to do today?
                         <br />
                         <br />
-                        1️⃣ Record Sales
+                        1. Record Sales
                         <br />
-                        2️⃣ Record Purchases
+                        2. Record Purchases
                         <br />
-                        3️⃣ View Today&apos;s Summary
+                        3. View Today&apos;s Summary
                         <br />
-                        4️⃣ View Insights
+                        4. View Insights
                       </p>
                       <p className="text-[10px] text-white/30 mt-1.5">10:03 AM</p>
                     </motion.div>

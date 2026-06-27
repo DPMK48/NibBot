@@ -409,7 +409,7 @@ export default function DashboardPage() {
                 <div>
                   <div className="flex items-center gap-2">
                     <h2 className="text-xl sm:text-2xl font-black text-charcoal">
-                      🏪 {data.user.businessName}
+                      {data.user.businessName}
                     </h2>
                     <span className="text-[10px] font-bold text-gold uppercase tracking-wider bg-gold/10 px-2.5 py-0.5 rounded-full border border-gold/20">
                       {data.user.businessType}
@@ -482,7 +482,7 @@ export default function DashboardPage() {
                     ₦{data.stats.netProfit.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                   </p>
                   <p className="text-[10px] text-muted mt-1">
-                    {data.stats.netProfit >= 0 ? "🎉 You made a profit!" : "⚠️ You spent more than you sold"}
+                    {data.stats.netProfit >= 0 ? "You made a profit!" : "You spent more than you sold"}
                   </p>
                 </div>
 
@@ -505,7 +505,7 @@ export default function DashboardPage() {
               <div className="bg-white border border-border p-5 rounded-2xl shadow-sm">
                 <div className="mb-4">
                   <h3 className="text-base font-bold text-charcoal flex items-center gap-1.5">
-                    📈 Sales Trend (Money In Day by Day)
+                    Sales Trend (Money In Day by Day)
                   </h3>
                   <p className="text-xs text-muted">A timeline showing your store sales logs</p>
                 </div>
@@ -674,7 +674,7 @@ export default function DashboardPage() {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
                   <div>
                     <h3 className="text-base font-bold text-charcoal flex items-center gap-2">
-                      📋 Your Booking History
+                      Your Booking History
                     </h3>
                     <p className="text-xs text-muted">A full list of items logged on WhatsApp</p>
                   </div>
@@ -744,7 +744,7 @@ export default function DashboardPage() {
                                 ₦{parseFloat(t.total).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                               </td>
                               <td className="py-4 px-4 text-center text-muted capitalize">
-                                {t.inputType === "voice" ? "🎙️ Voice" : "💬 Text"}
+                                {t.inputType === "voice" ? "Voice" : "Text"}
                               </td>
                             </tr>
                           );

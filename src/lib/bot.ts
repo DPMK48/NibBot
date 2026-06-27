@@ -86,10 +86,17 @@ export async function getOrCreateConversation(phone: string): Promise<Conversati
     .values({ phone: normalizedPhone, language: "English", state: "welcome" })
     .returning();
 
-  // Also create user record
+  // Also create user record with 30 days trial
+  const trialEnds = new Date();
+  trialEnds.setDate(trialEnds.getDate() + 30);
   await db
     .insert(users)
-    .values({ phone: normalizedPhone, language: "English" })
+    .values({
+      phone: normalizedPhone,
+      language: "English",
+      trialEndsAt: trialEnds,
+      isSubscribed: false,
+    })
     .onConflictDoNothing({ target: users.phone });
 
   return {
@@ -131,6 +138,63 @@ export async function handleIncomingMessage(
   const conversation = await getOrCreateConversation(from);
   const lang = conversation.language;
   const msg = body.trim();
+  const normalizedPhone = from.replace("whatsapp:", "");
+
+  const msgClean = msg.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").trim();
+
+  // Reset command "Hello NibBot"
+  if (msgClean === "hello nibbot") {
+    await updateConversation(from, { state: "welcome" });
+    const freshConversation = await getOrCreateConversation(from);
+    return MESSAGES[freshConversation.language].welcome;
+  }
+
+  // Mock subscription commands
+  if (msgClean === "subscribe" || msgClean === "pay") {
+    await db
+      .update(users)
+      .set({ isSubscribed: true })
+      .where(eq(users.phone, normalizedPhone));
+    return lang === "Hausa"
+      ? "Godiya ta tabbata! An yi nasarar yin rajista. Yanzu kuna da cikakken damar amfani da NibBot. Sanya 1 don shigar da siyarwa ko 2 don shigar da siya."
+      : "Thank you! Subscription successful. You now have full access to NibBot. Send 1 to record a sale or 2 to record a purchase.";
+  }
+
+  if (msgClean === "expire") {
+    const pastDate = new Date();
+    pastDate.setDate(pastDate.getDate() - 5); // 5 days ago
+    await db
+      .update(users)
+      .set({ isSubscribed: false, trialEndsAt: pastDate })
+      .where(eq(users.phone, normalizedPhone));
+    return lang === "Hausa"
+      ? "An saita gwajin ku zuwa ƙarewa. Da fatan za a aiko da wani saƙo don duba sakamakon."
+      : "Your trial has been set to expired. Please send any message to see the billing block.";
+  }
+
+  // Retrieve user record to check billing restrictions
+  const userResult = await db.select().from(users).where(eq(users.phone, normalizedPhone)).limit(1);
+  let user = userResult[0];
+
+  // Backfill trialEndsAt if missing (e.g. for existing records)
+  if (user && !user.trialEndsAt) {
+    const trialEnds = new Date(user.createdAt || new Date());
+    trialEnds.setDate(trialEnds.getDate() + 30);
+    await db.update(users).set({ trialEndsAt: trialEnds }).where(eq(users.phone, normalizedPhone));
+    user.trialEndsAt = trialEnds;
+  }
+
+  // Check trial expiration
+  const isSubscribed = user?.isSubscribed ?? false;
+  const trialEndsAt = user?.trialEndsAt ? new Date(user.trialEndsAt) : null;
+  const hasTrialExpired = trialEndsAt ? trialEndsAt < new Date() : false;
+
+  if (hasTrialExpired && !isSubscribed) {
+    if (lang === "Hausa") {
+      return "Gwajin ku na kyauta na wata 1 na NibBot ya ƙare. Don ci gaba da amfani da NibBot da adana bayanai, da fatan za a yi rajista akan ₦1,000 kawai a kowane wata. Rubuta 'SUBSCRIBE' don biyan kuɗi.";
+    }
+    return "Your 1-month free trial of NibBot has expired. To continue using NibBot and recording transactions, please subscribe for only ₦1,000/month. Text 'SUBSCRIBE' to subscribe.";
+  }
 
   // Handle voice notes
   let messageText = msg;

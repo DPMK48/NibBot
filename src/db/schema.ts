@@ -1,4 +1,4 @@
-import { pgTable, serial, varchar, text, integer, timestamp, decimal, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, serial, varchar, text, integer, timestamp, decimal, jsonb, boolean } from "drizzle-orm/pg-core";
 
 
 export const transactions = pgTable("transactions", {
@@ -22,6 +22,8 @@ export const users = pgTable("users", {
   language: varchar("language", { length: 20 }).default("English"),
   businessType: varchar("business_type", { length: 100 }),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  trialEndsAt: timestamp("trial_ends_at", { withTimezone: true }),
+  isSubscribed: boolean("is_subscribed").default(false),
 });
 
 export const conversations = pgTable("conversations", {
@@ -41,4 +43,15 @@ export const verifications = pgTable("verifications", {
   expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
+
+export const stories = pgTable("stories", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  phone: varchar("phone", { length: 50 }).notNull(),
+  businessType: varchar("business_type", { length: 100 }),
+  language: varchar("language", { length: 20 }).default("English"),
+  story: text("story").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+});
+
 

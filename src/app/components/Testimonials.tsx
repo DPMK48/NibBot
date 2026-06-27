@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { Quote } from "lucide-react";
+import { Quote, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Testimonial {
   name: string;
@@ -40,9 +40,56 @@ const staticTestimonials: Testimonial[] = [
 
 export default function Testimonials() {
   const ref = useRef(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
 
-  const allTestimonials = staticTestimonials;
+  const [dynamicTestimonials, setDynamicTestimonials] = useState<Testimonial[]>([]);
+
+  useEffect(() => {
+    async function loadStories() {
+      try {
+        const res = await fetch("/api/stories");
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && Array.isArray(json.data)) {
+            const mapped: Testimonial[] = json.data.map((item: any) => {
+              // Capitalize business type for display
+              let businessDisplay = "Business Owner";
+              if (item.businessType) {
+                businessDisplay = item.businessType
+                  .replace(/_/g, " ")
+                  .replace(/\b\w/g, (c: string) => c.toUpperCase());
+              }
+              return {
+                name: item.name,
+                business: businessDisplay,
+                quote: item.story || "",
+                language: item.language || "English",
+              };
+            });
+            setDynamicTestimonials(mapped);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to load user stories:", error);
+      }
+    }
+    loadStories();
+  }, []);
+
+  const allTestimonials = [...staticTestimonials, ...dynamicTestimonials];
+
+  const scroll = (direction: "left" | "right") => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, clientWidth } = scrollContainerRef.current;
+      const scrollAmount = clientWidth * 0.8;
+      const target = direction === "left" ? scrollLeft - scrollAmount : scrollLeft + scrollAmount;
+      scrollContainerRef.current.scrollTo({
+        left: target,
+        behavior: "smooth",
+      });
+    }
+  };
 
   return (
     <section className="py-24 bg-offwhite">
@@ -66,37 +113,61 @@ export default function Testimonials() {
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {allTestimonials.map((t, index) => (
-            <motion.div
-              key={`${t.name}-${index}`}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: Math.min(index * 0.15, 1) }}
-              className="bg-white rounded-2xl p-8 border border-border hover:border-gold/20 hover:shadow-lg transition-all duration-300 flex flex-col"
-            >
-              <div className="w-10 h-10 bg-gold/10 rounded-full flex items-center justify-center mb-5">
-                <Quote className="w-4 h-4 text-gold" />
-              </div>
-              <p className="text-sm text-charcoal leading-relaxed flex-1">
-                &ldquo;{t.quote}&rdquo;
-              </p>
-              {t.translation && (
-                <p className="mt-3 text-xs text-muted italic border-l-2 border-gold/30 pl-3">
-                  {t.translation}
+        <div className="relative px-2 sm:px-12">
+          {/* Left Arrow Button */}
+          <button
+            onClick={() => scroll("left")}
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white hover:bg-gold hover:text-white text-charcoal border border-border w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-gold"
+            aria-label="Previous stories"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+
+          {/* Scroll Container */}
+          <div
+            ref={scrollContainerRef}
+            className="flex overflow-x-auto gap-6 pb-8 pt-4 no-scrollbar scroll-smooth snap-x snap-mandatory"
+          >
+            {allTestimonials.map((t, index) => (
+              <motion.div
+                key={`${t.name}-${index}`}
+                initial={{ opacity: 0, y: 30 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.5, delay: Math.min(index * 0.15, 1) }}
+                className="min-w-[280px] sm:min-w-[340px] md:min-w-[380px] max-w-[400px] bg-white rounded-2xl p-8 border border-border hover:border-gold/20 hover:shadow-xl transition-all duration-300 flex flex-col shrink-0 snap-start"
+              >
+                <div className="w-10 h-10 bg-gold/10 rounded-full flex items-center justify-center mb-5">
+                  <Quote className="w-4 h-4 text-gold" />
+                </div>
+                <p className="text-sm text-charcoal leading-relaxed flex-1">
+                  &ldquo;{t.quote}&rdquo;
                 </p>
-              )}
-              <div className="mt-6 pt-5 border-t border-border">
-                <p className="font-semibold text-charcoal text-sm">{t.name}</p>
-                <p className="text-xs text-muted mt-0.5">{t.business}</p>
-                {t.language === "Hausa" && (
-                  <span className="inline-block mt-2 text-[10px] bg-gold/10 text-gold-dark px-2 py-0.5 rounded-full font-medium">
-                    Hausa
-                  </span>
+                {t.translation && (
+                  <p className="mt-3 text-xs text-muted italic border-l-2 border-gold/30 pl-3">
+                    {t.translation}
+                  </p>
                 )}
-              </div>
-            </motion.div>
-          ))}
+                <div className="mt-6 pt-5 border-t border-border">
+                  <p className="font-semibold text-charcoal text-sm">{t.name}</p>
+                  <p className="text-xs text-muted mt-0.5">{t.business}</p>
+                  {t.language === "Hausa" && (
+                    <span className="inline-block mt-2 text-[10px] bg-gold/10 text-gold-dark px-2 py-0.5 rounded-full font-medium">
+                      Hausa
+                    </span>
+                  )}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Right Arrow Button */}
+          <button
+            onClick={() => scroll("right")}
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white hover:bg-gold hover:text-white text-charcoal border border-border w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-gold"
+            aria-label="Next stories"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
         </div>
       </div>
     </section>

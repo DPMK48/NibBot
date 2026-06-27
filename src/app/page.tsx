@@ -5,6 +5,8 @@ import Features from "./components/Features";
 import Demo from "./components/Demo";
 import Impact from "./components/Impact";
 import Testimonials from "./components/Testimonials";
+import ShareStory from "./components/ShareStory";
+import Pricing from "./components/Pricing";
 import Footer from "./components/Footer";
 
 export default function Home() {
@@ -17,6 +19,8 @@ export default function Home() {
       <Demo />
       <Impact />
       <Testimonials />
+      <ShareStory />
+      <Pricing />
       <Footer />
     </main>
   );
