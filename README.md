@@ -36,9 +36,11 @@ Core features:
 
 ## Demo
 
-- Live Demo: [WhatsApp Demo Link]
-- Demo Video: [Paste Link]
-- Pitch Deck: [Paste Link]
+- Live Demo: https://nib-bot.vercel.app/
+
+- Demo Video: https://drive.google.com/file/d/1V5Qhmc_77xkbwyJwDYQbWRX7YsTNmDgj/view?usp=sharing
+
+- Pitch Deck: https://drive.google.com/file/d/1l2zt4zjh96rCLmCqxoUtEobYxQBhFAkH/view?usp=sharing
 
 ## Screenshots
 
