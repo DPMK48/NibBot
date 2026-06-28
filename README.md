@@ -174,9 +174,10 @@ Open `http://localhost:3000` in your browser.
 
 ## Challenges We Faced
 
-- **Bilingual Voice Processing**: Transcribing voice notes containing mixed English, Pidgin, and Hausa speech required custom system instructions for Whisper and fallback translation handling.
-- **Parsing Informal Speech**: Building a robust system to extract items, quantities, and prices from unstructured logs (e.g. "I sold two bags of rice to Aunty Shade for 70k") required careful prompting of GPT-4o-mini to output valid structured JSON.
-- **Interactive TTY Sandbox Limits**: Working within sandbox terminals limited our ability to run interactive migration generation scripts directly, which required manual schema synchronization.
+- **User Interviews & Feedback**: Speaking to market women and small retailers was challenging due to their busy business schedules and initial hesitation to trust digital recording tools.
+- **Twilio WhatsApp Sandbox Integration**: Configuring webhooks and testing the messaging payload verification checks locally presented complex troubleshooting hurdles.
+- **Hackathon Time Constraints**: Building the onboarding, message router, database structure, and owner portal dashboard within a very tight timeline.
+- **Resource Constraints (Funding API Costs)**: Advanced features like live speech-to-text (Whisper) and generative LLM parsing (GPT-4o-mini) require paid API usage. Lacking development funds, we had to rely on building a robust rule-based parsing engine for the prototype.
 
 ## What We Would Improve Next
 
@@ -189,7 +190,7 @@ Open `http://localhost:3000` in your browser.
 ## Business / Sustainability Model
 
 - **Users/customers**: Female small-scale retail owners and market sellers in Nigeria.
-- **Revenue or support model**: A monthly subscription model of ₦1,000/month following a 30-day free trial.
+- **Revenue or support model**: A monthly subscription model of ₦1,500/month following a 30-day free trial.
 - **Key partners**: Microfinance banks, local market cooperatives, and POS agent networks.
 - **Main costs**: OpenAI API fees (GPT-4o-mini, Whisper), Twilio API messaging charges, and cloud database hosting.
 
