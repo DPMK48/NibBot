@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   TrendingUp,
@@ -82,10 +83,13 @@ export default function DashboardPage() {
     if (savedData) {
       try {
         const parsed = JSON.parse(savedData);
-        setData(parsed);
-        setPhone(parsed.user.phone);
-        setBusinessName(parsed.user.businessName);
-        setStep("dashboard");
+        const timer = setTimeout(() => {
+          setData(parsed);
+          setPhone(parsed.user.phone);
+          setBusinessName(parsed.user.businessName);
+          setStep("dashboard");
+        }, 0);
+        return () => clearTimeout(timer);
       } catch (e) {
         console.error("Failed to parse saved session", e);
       }
@@ -228,14 +232,14 @@ export default function DashboardPage() {
     <main className="min-h-screen bg-[#fafafa] text-charcoal flex flex-col justify-between">
       {/* Top Banner/Navbar */}
       <div className="bg-[#0a0a0a] text-white py-5 px-6 border-b border-white/5 flex items-center justify-between">
-        <a href="/" className="flex items-center gap-2 group">
+        <Link href="/" className="flex items-center gap-2 group">
           <div className="w-8 h-8 bg-gold rounded-lg flex items-center justify-center">
             <MessageCircle className="w-4 h-4 text-white" />
           </div>
           <span className="text-lg font-bold text-white tracking-tight">
             Nib<span className="text-gold">Bot</span>
           </span>
-        </a>
+        </Link>
         <h1 className="text-sm font-semibold tracking-wider text-white/50 uppercase hidden sm:block">
           Business Owner Portal
         </h1>

@@ -7,7 +7,7 @@ function WhatsAppButton() {
   const number = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
   const href = number
     ? `https://wa.me/${number}?text=${encodeURIComponent("Hello NibBot")}`
-    : "#waitlist";
+    : "#";
 
   return (
     <a

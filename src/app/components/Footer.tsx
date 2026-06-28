@@ -6,7 +6,7 @@ function getWhatsAppHref() {
   const number = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
   return number
     ? `https://wa.me/${number}?text=${encodeURIComponent("Hello NibBot")}`
-    : "#waitlist";
+    : "#";
 }
 
 export default function Footer() {

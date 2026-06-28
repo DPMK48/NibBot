@@ -70,9 +70,13 @@ export default function Demo() {
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!isInView || isPlaying) return;
-    setIsPlaying(true);
-  }, [isInView]);
+    if (isInView && !isPlaying) {
+      const timer = setTimeout(() => {
+        setIsPlaying(true);
+      }, 0);
+      return () => clearTimeout(timer);
+    }
+  }, [isInView, isPlaying]);
 
   useEffect(() => {
     if (!isPlaying) return;

@@ -1,152 +1,209 @@
 # NibBot
 
-A bilingual WhatsApp-based AI bookkeeping assistant for small business women in Nigeria.
+> One-line summary: A bilingual WhatsApp-based AI bookkeeping assistant for small business women in Nigeria that extracts transactions from voice/text and tracks daily profit without a calculator.
 
-## Features
+## HER Hackathon Track
 
-- 📱 **WhatsApp-first** — no app download needed
-- 🎙️ **Voice notes + text** — speak or type naturally
-- 🌍 **English + Hausa** — full bilingual support
-- 🤖 **AI-powered extraction** — OpenAI GPT-4o-mini extracts products, quantities, prices, and totals
-- 🔄 **Smart Clarification** — automatically asks clarifying questions in the selected language if details are missing or vague
-- 📊 **Daily profit summaries** — know your numbers instantly
-- 💡 **Business insights** — AI-generated practical business advice tailored to the business type
+- Track: SME Growth
+- Team Name: Dexplorers
+- Team Members:
+  - Dorathy Paul — Team Lead & Product Developer
+  - Deborah Fashida — Researcher & Designer
+
+## Problem Statement
+
+Small business and market women in Nigeria struggle to track their daily sales, purchases, and profits because traditional bookkeeping apps are too complex, require manual typing, and are only in English, while paper logs are easily lost or damaged. This leads to poor cash flow management, loss of business capital, and lack of records to secure micro-loans.
+
+Evidence from validation (we spoke to 10 women retailers to understand how they manage their business finances):
+
+- **8/10 women** couldn't confidently calculate their daily profit.
+- **6/10 women** said poor financial records limited their planning, funding, or business growth.
+- **5/10 women** had stopped keeping detailed records because it was too difficult to maintain.
+
+> Note: AI helped us organize our research and refine questions, but our problem validation is based on real user research and credible sources.
+
+## Solution Overview
+
+NibBot helps small business women in Nigeria achieve financial clarity and track daily profits by providing a simple, voice-enabled bookkeeping assistant directly inside WhatsApp.
+
+*Note on AI Integration: To keep prototype run costs at zero, the bot is currently running on a robust rule-based text/voice-note parser. However, the complete integration for OpenAI GPT-4o-mini and Whisper is fully coded and ready to be toggled on by adding a standard API key to the environment variables.*
+
+Core features:
+
+1. **Bilingual Voice & Text Logging**: Speak or type naturally in English or Hausa (tailored for users in Northern Nigeria, with plans to expand to Yoruba and Igbo).
+2. **Transaction Extraction**: Automatically parses products, quantities, prices, and totals from informal conversations.
+3. **Interactive Clarification & Summary**: Automatically asks follow-up questions in the chosen language if details are missing, and generates instant daily profit calculations.
+
+## Demo
+
+- Live Demo: [WhatsApp Demo Link]
+- Demo Video: [Paste Link]
+- Pitch Deck: [Paste Link]
+
+## Screenshots
+
+| Screen | Description |
+|---|---|
+| ![Landing Page](./assets/screenshot-1.jpg) | Landing page displaying the product value proposition and WhatsApp CTAs. |
+| ![WhatsApp Bot Onboarding](./assets/screenshot-2.jpg) | WhatsApp flow showing language selection, business details collection, and main menu. |
+
+## How It Works
+
+1. **User sends a message**: The user sends a text or voice note on WhatsApp (in English or Hausa) detailing a sale or purchase.
+2. **System processes and extracts**: NibBot transcribes the audio (if voice), extracts transaction details (using the rule-based parser for prototype testing, or GPT-4o-mini in production), asks for clarification if details are vague, and requests confirmation.
+3. **Save and Summarize**: Upon confirmation, the transaction is saved. The user can request their daily profit summary or tailored business insights instantly.
+
+## Validation & Research
+
+Who we spoke to / researched:
+
+- 10 target market women and retail shop owners in local markets.
+- Hackathon mentors and domain experts in microfinance and retail business.
+- Industry reports on mobile internet adoption and financial inclusion in Nigeria.
+
+Key findings:
+
+| Finding | Evidence | Product decision |
+|---|---|---|
+| High WhatsApp usage | 90%+ of interviewed women use WhatsApp daily but avoid downloading utility apps. | Designed the entire interface to live inside WhatsApp. |
+| Language barriers | Several interviewees prefer communicating in Hausa or Pidgin over standard English. | Added full bilingual support (English & Hausa) for both text and voice. |
+| Co-mingling of funds | Sellers frequently spend sales cash on personal needs without tracking. | Added automated profit calculations (Sales vs. Purchases) and business insights. |
 
 ## Tech Stack
 
-- Next.js 16 + React 19 + TypeScript
-- Tailwind CSS
-- Drizzle ORM + PostgreSQL (Supabase)
-- Twilio WhatsApp API
-- OpenAI Whisper + GPT-4o-mini
+- Frontend: Next.js (React), Tailwind CSS, Framer Motion
+- Backend: Next.js API Routes, Twilio WhatsApp API
+- Database: PostgreSQL (Supabase), Drizzle ORM
+- AI/API Tools: OpenAI Whisper (Transcription), OpenAI GPT-4o-mini (Extraction & Insights) - *Fully implemented, currently set to rule-based parser fallback for cost*
+- Deployment: Vercel
 
-## Getting Started
+## Architecture
 
-### 1. Install dependencies
+```text
+  [User (WhatsApp)]
+         ↓
+  [Twilio WhatsApp Gateway]
+         ↓
+  [Next.js API Webhook (/api/whatsapp)]
+    ↙                       ↘
+[OpenAI Whisper]        [OpenAI GPT-4o-mini]
+(Audio Transcription)  (Extraction & Insights)
+    ↘                       ↙
+  [Drizzle ORM / PostgreSQL (Supabase)]
+```
+
+## Installation / Setup
+
+### Prerequisites
+
+- Node.js 18+
+- npm or yarn
+- Supabase (PostgreSQL) Database
+- Twilio account with WhatsApp Sandbox enabled
+- OpenAI API Key (optional for fallback/rule-based mode, required for full AI feature set)
+
+### Clone the repository
+
+```bash
+git clone https://github.com/your-repo/NibBot.git
+cd NibBot
+```
+
+### Install dependencies
 
 ```bash
 npm install
 ```
 
-### 2. Set up environment variables
+### Set up environment variables
 
-Copy `.env` and fill in your credentials:
+Create a `.env` file in the root directory:
 
-```bash
-# --- Database ---
-DATABASE_URL=postgresql://...
-
-# --- Twilio (WhatsApp) ---
+```env
+DATABASE_URL=your_postgresql_database_url
 TWILIO_ACCOUNT_SID=your_twilio_account_sid
 TWILIO_AUTH_TOKEN=your_twilio_auth_token
 TWILIO_PHONE_NUMBER=whatsapp:+14155238886
-
-# --- OpenAI ---
 OPENAI_API_KEY=your_openai_api_key
-
-# --- Public (exposed to the browser) ---
 NEXT_PUBLIC_WHATSAPP_NUMBER=14155238886
 ```
 
-### 3. Push database schema
+### Initialize Database
 
-Deploy the Drizzle schema to your PostgreSQL database:
+Deploy the Drizzle schema to your database:
 
 ```bash
 npm run db:push
 ```
 
-### 4. Run the development server
+### Run locally
 
 ```bash
 npm run dev
 ```
 
-The landing page will be available at `http://localhost:3000`.
+Open `http://localhost:3000` in your browser.
 
----
+## Usage
 
-## WhatsApp Bot Setup
+1. Send "Hello NibBot" to the WhatsApp sandbox number.
+2. Select your preferred language (1 for English, 2 for Hausa).
+3. Enter your business name and business type to complete onboarding.
+4. Record a sale or purchase by typing or sending a voice note, and confirm the extracted values to log them.
 
-### Using Twilio WhatsApp Sandbox (free for testing)
+## Project Structure
 
-1. **Create a Twilio account** at [twilio.com](https://www.twilio.com/try-twilio)
-2. **Get a Twilio phone number** or use the WhatsApp Sandbox
-3. **Find your credentials** in the [Twilio Console](https://console.twilio.com):
-   - Account SID
-   - Auth Token
-4. **Configure the WhatsApp Sandbox**:
-   - Go to **Messaging > Try it out > Send a WhatsApp message**
-   - Copy the Sandbox number (usually `+1 415 523 8886`)
-   - Set `TWILIO_PHONE_NUMBER=whatsapp:+14155238886` and `NEXT_PUBLIC_WHATSAPP_NUMBER=14155238886` in `.env`
-5. **Set the webhook URL**:
-   - In the Sandbox settings, set "When a message comes in" to:
-     ```
-     https://your-domain.com/api/whatsapp
-     ```
-   - For local testing, use [ngrok](https://ngrok.com/):
-     ```bash
-     ngrok http 3000
-     ```
-     Then configure the webhook URL with the ngrok HTTPS URL + `/api/whatsapp`. Note that signature check is bypassed in local `development` mode if the header is missing.
-6. **Join the Sandbox**:
-   - Send a WhatsApp message to the Sandbox number with the join code shown in your Twilio console.
-7. **Start chatting**:
-   - Send any message (e.g. "hello") to begin the onboarding flow.
-
----
-
-## How the Bot Works Under the Hood
-
-1. **Webhook Payload Received**: The user sends a WhatsApp message or audio note. Twilio forwards it to `/api/whatsapp`.
-2. **Audio Transcription**: If it's an audio note, the bot downloads the media from Twilio and transcribes it using **OpenAI Whisper**.
-3. **AI Information Extraction**: The message text is sent to **OpenAI GPT-4o-mini** with system instructions to extract the transaction details (Product, Quantity, Unit, Price, Total, and Transaction Type).
-4. **Clarification**: If any fields are vague or missing, the bot generates a targeted clarifying question (in English or Hausa) and pauses for the user's input.
-5. **Confirmation**: Once details are complete, the bot presents the extracted details and asks for verification.
-6. **Data Storage**: Upon user confirmation, the transaction is saved to PostgreSQL using **Drizzle ORM**.
-
----
-
-## Conversation Flow
-
-```
-   Welcome (Hi/Hello)
-          │
-          ▼
-  Language Selection (1. English / 2. Hausa)
-          │
-          ▼
-  Onboarding: Business Name (e.g., Mama Aisha Store)
-          │
-          ▼
-  Onboarding: Business Type (e.g., Provisions)
-          │
-          ▼
-  Main Menu
-   ├── [1] Record Sales ──────┐
-   ├── [2] Record Purchases ──┼──► Voice/Text Input
-   │                          │          │
-   │                          │          ▼
-   │                          │    AI Extraction (GPT-4o-mini)
-   │                          │          │
-   │                          │          ├─► [Vague/Missing] ──► Clarification Loop
-   │                          │          │                            │
-   │                          │          ▼                            ▼
-   │                          └────► Confirmation (1. Yes / 2. No) ◄──┘
-   │                                     │
-   │                                     ├─► [Yes] ──► Save to DB & Menu
-   │                                     └─► [No] ───► Discard & Menu
-   │
-   ├── [3] Today's Summary (Aggregates daily sales, purchases, and profit)
-   └── [4] View Insights (AI-generated advice based on recent transactions)
+```text
+.
+├── assets/             # Screenshots and visual media
+├── drizzle/            # Database migrations and snapshots
+├── src/
+│   ├── app/
+│   │   ├── api/        # Next.js API routes (whatsapp webhook, stories, stats, dashboard)
+│   │   ├── components/ # Landing page sections
+│   │   ├── dashboard/  # Business owner web portal
+│   │   ├── globals.css
+│   │   └── page.tsx
+│   ├── db/             # Drizzle client and schema definitions
+│   └── lib/            # WhatsApp bot router, Twilio, and OpenAI helpers
+├── package.json
+└── README.md
 ```
 
-## Database Management Scripts
+## Challenges We Faced
 
-- `npm run db:push` — Push the local schema directly to the database.
-- `npm run db:studio` — Open the Drizzle Studio GUI to inspect tables.
-- `npm run db:generate` — Generate SQL migrations.
+- **Bilingual Voice Processing**: Transcribing voice notes containing mixed English, Pidgin, and Hausa speech required custom system instructions for Whisper and fallback translation handling.
+- **Parsing Informal Speech**: Building a robust system to extract items, quantities, and prices from unstructured logs (e.g. "I sold two bags of rice to Aunty Shade for 70k") required careful prompting of GPT-4o-mini to output valid structured JSON.
+- **Interactive TTY Sandbox Limits**: Working within sandbox terminals limited our ability to run interactive migration generation scripts directly, which required manual schema synchronization.
+
+## What We Would Improve Next
+
+- **Additional Language Support**: Expand localization support beyond English and Hausa to include Yoruba and Igbo to reach business owners across all regions of Nigeria.
+- **Full OpenAI Activation**: Transition from rule-based parser to the fully integrated OpenAI Whisper/GPT-4o-mini pipeline once API funding is secured.
+- **Real Payment Integrations**: Replace mock subscription codes with real Paystack or Flutterwave payment gateway links for the ₦1,000/month plan.
+- **Bilingual TTS (Text-to-Speech)**: Allow the bot to read back transaction confirmations and summaries via voice note for low-literacy users.
+- **Offline Sync & SMS Fallback**: Extend the assistant to work over SMS for users in rural areas with poor internet connection.
+
+## Business / Sustainability Model
+
+- **Users/customers**: Female small-scale retail owners and market sellers in Nigeria.
+- **Revenue or support model**: A monthly subscription model of ₦1,000/month following a 30-day free trial.
+- **Key partners**: Microfinance banks, local market cooperatives, and POS agent networks.
+- **Main costs**: OpenAI API fees (GPT-4o-mini, Whisper), Twilio API messaging charges, and cloud database hosting.
+
+## Team Contributions
+
+| Name | Role | Contribution |
+|---|---|---|
+| Dorathy Paul | Team Lead & Product Developer | Orchestrated project development, implemented Next.js API routes, WhatsApp bot conversation state machine, and Drizzle database integration. |
+| Deborah Fashida | Researcher & Designer | Conducted user surveys and interviews with local market sellers to validate the problem, and designed the branding, Figma mockups, and wireframes. |
+
+## Acknowledgements
+
+- NITHUB, University of Lagos
+- HER Hackathon mentors, facilitators, judges, and volunteers
+- The local market women who shared their time and feedback for our research
 
 ## License
 
-MIT
+For hackathon/demo purposes only.

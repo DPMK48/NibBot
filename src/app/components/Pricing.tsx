@@ -124,7 +124,7 @@ export default function Pricing() {
               </p>
 
               <div className="mt-6 flex items-baseline">
-                <span className="text-5xl font-black text-white">₦1,000</span>
+                <span className="text-5xl font-black text-white">₦1,500</span>
                 <span className="text-white/60 text-sm ml-2">/ subsequent month</span>
               </div>
 
