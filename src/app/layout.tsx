@@ -5,7 +5,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "NibBot — Your Smart Business Assistant on WhatsApp",
   description:
-    "NibBot is a bilingual WhatsApp AI assistant that helps small business women in Nigeria record daily sales and purchases through voice or text, and instantly know their profit — in English or Hausa.",
+    "NibBot is a bilingual WhatsApp AI assistant that helps SMEs and retailers in Nigeria record daily sales and purchases through voice or text, and instantly know their profit — in English or Hausa.",
   keywords: [
     "NibBot",
     "WhatsApp bookkeeping",

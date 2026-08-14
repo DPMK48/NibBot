@@ -24,7 +24,7 @@ export default function Footer() {
               </span>
             </a>
             <p className="text-sm text-white/40 leading-relaxed max-w-xs">
-              A bilingual WhatsApp AI assistant helping small business women in
+              A bilingual WhatsApp AI assistant helping SMEs and retailers in
               Nigeria know their daily profit — in English or Hausa.
             </p>
           </div>
@@ -109,7 +109,7 @@ export default function Footer() {
           </p>
           <p className="text-xs text-white/30 flex items-center gap-1">
             Built with <Heart className="w-3 h-3 text-gold" /> for Nigerian
-            business women
+            SMEs and retailers
           </p>
         </div>
       </div>

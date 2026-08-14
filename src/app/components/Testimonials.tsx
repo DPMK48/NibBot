@@ -105,7 +105,7 @@ export default function Testimonials() {
             Real Stories
           </span>
           <h2 className="mt-3 text-3xl sm:text-4xl font-bold text-charcoal">
-            From Women Like You
+            From Business Owners Like You
           </h2>
           <p className="mt-4 text-muted max-w-2xl mx-auto">
             These are real business owners who have transformed how they track

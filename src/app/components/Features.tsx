@@ -71,7 +71,7 @@ export default function Features() {
             Everything You Need
           </h2>
           <p className="mt-4 text-white/50 max-w-2xl mx-auto">
-            Powerful features designed specifically for small business women who
+            Powerful features designed specifically for SMEs and retailers who
             need simplicity without sacrificing capability.
           </p>
         </motion.div>

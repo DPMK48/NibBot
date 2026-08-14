@@ -76,7 +76,7 @@ export default function ShareStory() {
                   <CheckCircle className="w-3.5 h-3.5 text-gold" />
                 </div>
                 <p className="text-sm text-white/60">
-                  Inspire other market women and sellers.
+                  Inspire other SMEs and retailers.
                 </p>
               </div>
               <div className="flex items-start gap-3">

@@ -128,7 +128,7 @@ export default function Impact() {
             Numbers That Matter
           </h2>
           <p className="mt-4 text-white/50 max-w-2xl mx-auto">
-            Every number represents a business owner who now knows her daily
+            Every number represents a business owner who now knows their daily
             profit for the first time.
           </p>
         </motion.div>
