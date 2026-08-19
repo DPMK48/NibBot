@@ -4,6 +4,8 @@ import { users, verifications, transactions } from "@/db/schema";
 import { eq, and, desc, or } from "drizzle-orm";
 import { normalizePhoneNumber } from "@/lib/utils";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     const { phone, code, businessName } = await req.json();

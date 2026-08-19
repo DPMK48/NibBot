@@ -5,6 +5,8 @@ import { eq, or } from "drizzle-orm";
 import { sendWhatsAppMessage } from "@/lib/twilio";
 import { normalizePhoneNumber } from "@/lib/utils";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     const { phone, businessName } = await req.json();

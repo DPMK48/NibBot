@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { handleIncomingMessage } from "@/lib/bot";
 import twilio from "twilio";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     const signature = req.headers.get("x-twilio-signature");
